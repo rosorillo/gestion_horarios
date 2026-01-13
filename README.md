@@ -6,8 +6,8 @@
 
 ## Arranque del proyecto
 ```bash
-git clone <repo>
-cd gestion_horarios
+git clone https://github.com/rosorillo/gestion_horarios.git
+cd gestion_horario
 cp backend/.env.example backend/.env
 docker compose up --build
 ```
