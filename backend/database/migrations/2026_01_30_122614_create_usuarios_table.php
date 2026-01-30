@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('password');
             $table->enum('rol', ['admin', 'profesor'])->default('profesor');
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }
