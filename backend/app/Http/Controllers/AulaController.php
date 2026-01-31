@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Asignatura;
+use App\Models\Aula;
 use Illuminate\Http\Request;
 
-class AsignaturaController extends Controller
+class AulaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Asignatura::all();
+        //
+        return Aula::all();
     }
 
     /**
@@ -20,15 +21,16 @@ class AsignaturaController extends Controller
      */
     public function store(Request $request)
     {
+        //
         $request->validate([
-            'nombre' => 'required|string|max:255'
+            'nombre'=>'required|string|max:255'
         ]);
 
-        $asignatura = Asignatura::create([
-            'nombre' => $request->nombre
+        $aula = Aula::create([
+            'nombre'=> $request->nombre
         ]);
 
-        return response()->json($asignatura);
+        return response()->json($aula);
     }
 
     /**
@@ -36,7 +38,9 @@ class AsignaturaController extends Controller
      */
     public function show(string $id)
     {
-        return Asignatura::findOrFail($id);
+        //
+        return Aula::findOrFail($id);
+
     }
 
     /**
@@ -46,15 +50,15 @@ class AsignaturaController extends Controller
     {
         //
         $request->validate([
-            'nombre'=>'required|string|max:255'
+            'nombre' => 'required|string|max:255'
         ]);
 
-        $asignatura = Asignatura::findOrFail($id);
-        $asignatura->update([
-            'nombre'=>$request->nombre
+        $aula = Aula::findOrFail($id);
+        $aula->update([
+            'nombre' => $request->nombre
         ]);
 
-        return response()->json($asignatura);
+        return response()->json($aula);
     }
 
     /**
@@ -63,7 +67,7 @@ class AsignaturaController extends Controller
     public function destroy(string $id)
     {
         //
-        Asignatura::destroy($id);
+        Aula::destroy($id);
 
         return response()->json(null, 204);
     }

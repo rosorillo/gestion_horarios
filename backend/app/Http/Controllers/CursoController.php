@@ -25,7 +25,7 @@ class CursoController extends Controller
         ]);
 
         $curso = Curso::create([
-            'nombre' =>$request->nombre
+            'nombre' => $request->nombre
         ]);
 
         return response()->json($curso);
