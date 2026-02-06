@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\AusenciaController;
@@ -23,4 +24,11 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+});
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/usuarios', [AdminUserController::class, 'index']);
+    Route::post('/usuarios', [AdminUserController::class, 'store']);
+    Route::put('/usuarios/{id}', [AdminUserController::class, 'update']);
+    Route::delete('/usuarios/{id}', [AdminUserController::class, 'destroy']);
 });
