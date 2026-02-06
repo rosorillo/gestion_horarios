@@ -1,0 +1,23 @@
+<div class="container my-4">
+  <h2>Schedules</h2>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Profesor</th>
+      <th>Asignatura</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (s of schedules; track s.id)
+      {
+        <tr>
+          <td>{{ s.id }}</td>
+          <td>{{ s.professor_id }}</td>
+          <td>{{ s.subject_id }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
