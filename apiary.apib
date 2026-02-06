@@ -1,80 +1,100 @@
 FORMAT: 1A
-HOST: https://polls.apiblueprint.org/
+HOST: http://localhost:8000
 
-# gestionhorarios
+# Gestión de horarios de profesores
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+API para la gestión de horarios de profesores de un centro educativo.
+Permite gestionar profesores y sus horarios.
 
-## Questions Collection [/questions]
+## Autenticación [/login]
 
-### List All Questions [GET]
+### Iniciar sesión [POST]
++ Request (application/json)
+    + Body
+        {
+          "email": "profesor@centro.com",
+          "password": "1234"
+        }
 
 + Response 200 (application/json)
+    + Body
+        {
+          "token": "token_de_sesion",
+          "usuario": {
+            "id": 1,
+            "nombre": "Ana"
+          }
+        }
 
++ Response 401 (application/json)
+    + Body
+        {
+          "error": "Credenciales incorrectas"
+        }
+
+## Profesores [/profesores]
+
+### Listar profesores [GET]
++ Response 200 (application/json)
+    + Body
         [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
+          {
+            "id": 1,
+            "nombre": "Ana",
+            "email": "ana@centro.com"
+          },
+          {
+            "id": 2,
+            "nombre": "Luis",
+            "email": "luis@centro.com"
+          }
         ]
 
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
-
+### Crear profesor [POST]
 + Request (application/json)
-
+    + Body
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+          "nombre": "Marta",
+          "email": "marta@centro.com"
         }
 
 + Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
-
     + Body
+        {
+          "id": 3,
+          "nombre": "Marta",
+          "email": "marta@centro.com"
+        }
 
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
-            }
+## Horarios [/horarios]
+
+### Ver horario de un profesor [GET /horarios?profesor_id=1]
++ Response 200 (application/json)
+    + Body
+        [
+          {
+            "dia": "LUNES",
+            "hora_inicio": "10:00",
+            "hora_fin": "11:00",
+            "asignatura": "Programación",
+            "aula": "A-12"
+          }
+        ]
+
+### Crear horario [POST]
++ Request (application/json)
+    + Body
+        {
+          "profesor_id": 1,
+          "dia": "LUNES",
+          "hora_inicio": "10:00",
+          "hora_fin": "11:00",
+          "asignatura": "Programación",
+          "aula": "A-12"
+        }
+
++ Response 201 (application/json)
+    + Body
+        {
+          "ok": true
+        }
