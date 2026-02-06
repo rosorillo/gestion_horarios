@@ -5,7 +5,7 @@ FORMAT: 1A
 API para la gestión de horarios de profesores de un centro educativo.
 Permite gestionar profesores y sus horarios.
 
-## Autenticación [/login]
+## Autenticación [/api/login]
 
 ### Iniciar sesión [POST]
 + Request (application/json)
@@ -18,43 +18,52 @@ Permite gestionar profesores y sus horarios.
 + Response 200 (application/json)
     + Body
         {
-          "token": "token_de_sesion",
-          "usuario": {
+          "user": {
             "id": 1,
-            "nombre": "Ana"
-          }
+            "nombre": "Ana",
+            "email": "ana@centro.es",
+            "rol": "profesor",
+            "foto": "fotos/usuarios/ana.jpg"
+          },
+          "token": "token_de_sesion"
         }
 
 + Response 401 (application/json)
     + Body
         {
-          "error": "Credenciales incorrectas"
+          "message": "Credenciales incorrectas"
         }
 
-## Profesores [/profesores]
+## Users [/users]
 
-### Listar profesores [GET]
+### Listar users [GET]
 + Response 200 (application/json)
     + Body
         [
           {
             "id": 1,
             "nombre": "Ana",
-            "email": "ana@centro.com"
+            "email": "ana@centro.com",
+            "rol": "profesor",
+            "foto": "fotos/usuarios/ana.jpg"
           },
           {
             "id": 2,
             "nombre": "Luis",
-            "email": "luis@centro.com"
+            "email": "luis@centro.com",
+            "rol": "profesor",
+            "foto": "fotos/usuarios/luis.jpg"
           }
         ]
 
-### Crear profesor [POST]
+### Crear user [POST]
 + Request (application/json)
     + Body
         {
           "nombre": "Marta",
-          "email": "marta@centro.com"
+          "email": "marta@centro.com",
+          "rol": "profesor",
+          "foto": "fotos/usuarios/marta.jpg"
         }
 
 + Response 201 (application/json)
@@ -62,38 +71,66 @@ Permite gestionar profesores y sus horarios.
         {
           "id": 3,
           "nombre": "Marta",
-          "email": "marta@centro.com"
+          "email": "marta@centro.com",
+          "rol": "profesor",
+          "foto": "fotos/usuarios/marta.jpg"
         }
 
 ## Horarios [/horarios]
 
-### Ver horario de un profesor [GET /horarios?profesor_id=1]
+### Ver horario de un user [GET /horarios?user_id=1]
 + Response 200 (application/json)
     + Body
         [
           {
-            "dia": "LUNES",
-            "hora_inicio": "10:00",
-            "hora_fin": "11:00",
-            "asignatura": "Programación",
-            "aula": "A-12"
+            "id": 1,
+            "dia_semana": 1,
+            "user": {
+              "id": 1,
+              "nombre": "Ana"
+            },
+            "asignatura": {
+              "id": 2,
+              "nombre": "Programación"
+            },
+            "curso": {
+              "id": 1,
+              "nombre": "1º DAW"
+            },
+            "aula": {
+              "id": 3,
+              "nombre": "A-12"
+            },
+            "franjaHoraria": {
+              "id": 4,
+              "hora_inicio": "10:00",
+              "hora_fin": "11:00"
+            }
           }
         ]
+
 
 ### Crear horario [POST]
 + Request (application/json)
     + Body
         {
-          "profesor_id": 1,
-          "dia": "LUNES",
-          "hora_inicio": "10:00",
-          "hora_fin": "11:00",
-          "asignatura": "Programación",
-          "aula": "A-12"
+          {
+              "usuario_id": 1,
+              "asignatura_id": 2,
+              "curso_id": 1,
+              "aula_id": 3,
+              "franja_id": 4,
+              "dia_semana": 1
         }
 
 + Response 201 (application/json)
     + Body
         {
-          "ok": true
+              "id": 10,
+              "usuario_id": 1,
+              "asignatura_id": 2,
+              "curso_id": 1,
+              "aula_id": 3,
+              "franja_id": 4,
+              "dia_semana": 1
         }
