@@ -10,6 +10,8 @@ git clone https://github.com/rosorillo/gestion_horarios.git
 cd gestion_horario
 cp backend/.env.example backend/.env
 docker compose up --build
+# Descargar dependencias Laravel (vendor)
+docker compose run --rm backend composer install
 ```
 
 ## DNS
