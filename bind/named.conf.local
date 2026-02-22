@@ -1,0 +1,9 @@
+zone "gestion-profes.es" {
+    type master;
+    file "/etc/bind/zones/db.gestion.es";
+};
+
+zone "0.20.172.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/db.172.20.0";
+};
