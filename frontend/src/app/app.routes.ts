@@ -3,6 +3,7 @@ import { DashboardComponent } from './dashboard/dashboard';
 import {ProfessorsComponent} from './professors/professors';
 import { LoginComponent } from './login/login';
 import { authGuard } from './guards/auth-guard'
+import {ScheduleComponent} from './schedule/scheduleComponent';
 export const routes: Routes = [
   { path: '',
     redirectTo: 'login',
@@ -19,6 +20,7 @@ export const routes: Routes = [
   },
   {
     path: 'asignaturas',
+    component: ScheduleComponent,
     canActivate: [authGuard],
   },
   {

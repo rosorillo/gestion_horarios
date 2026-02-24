@@ -1,7 +1,7 @@
 <div class="container my-4">
   <h2 class="mb-4">Entrar en el sistema</h2>
 
-  <form action="" method="POST">
+  <form [formGroup]="loginForm" (ngSubmit)="login()" method="POST">
 
     <!-- Campo email -->
     <div class="mb-3">
@@ -10,16 +10,16 @@
         type="email"
         class="form-control"
         id="email"
-        name="email"
+        formControlName="email"
         placeholder="correo@ejemplo.com"
-        value=""
+
       >
     </div>
     <input
       type="password"
       class="form-control"
       id="password"
-      name="password"
+      formControlName="password"
       placeholder="Contraseña"
       value=""
     >
@@ -27,11 +27,11 @@
 
     <!-- Acciones -->
     <div class="d-flex gap-2 m-2">
-      <button type="submit" class="btn btn-success">
+      <button type="submit" [disabled]="loginForm.invalid" class="btn btn-success">
         Entrar
       </button>
 
-      <a href="/profesores/index.html" class="btn btn-secondary">
+      <a [routerLink]="['/login']" class="btn btn-secondary">
         Volver
       </a>
     </div>
