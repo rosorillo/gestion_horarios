@@ -27,7 +27,7 @@
 
 
         <td>
-          <button class="btn btn-info btn-sm me-1" (click)="show(subject.id)">Ver</button>
+          <button [routerLink]="['/asignaturas', subject.id]" class="btn btn-info btn-sm me-1">Ver</button>
 
           <button class="btn btn-danger btn-sm" (click)="delete(subject.id)">Eliminar</button>
         </td>

@@ -47,4 +47,8 @@ export class ProfessorsService {
     console.error('API Error:', error);
     return throwError(() => error);
   }
+
+  getProfessor(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
 }

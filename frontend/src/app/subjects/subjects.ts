@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { inject } from '@angular/core';
 import { SubjectsService, Subject } from '../subjects.service';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-subjects',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './subjects.html',
   styleUrls: ['./subjects.scss'],
 })

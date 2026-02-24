@@ -1,0 +1,20 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h3>{{ subject.name }}</h3>
+    </div>
+
+    <div class="card-body">
+      <p><strong>ID:</strong> {{ subject.id }}</p>
+      <p><strong>Descripción:</strong> {{ subject.description }}</p>
+      <p><strong>Créditos:</strong> {{ subject.credits }}</p>
+    </div>
+
+
+  </div>
+  <div class="card-footer">
+    <a [routerLink]="['/asignaturas']" class="btn btn-secondary">
+      Volver
+    </a>
+  </div>
+</div>
