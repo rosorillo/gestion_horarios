@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfessorsService, Professor } from '../services/professors.service';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-professors',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './professors.html'
 })
 export class ProfessorsComponent implements OnInit {

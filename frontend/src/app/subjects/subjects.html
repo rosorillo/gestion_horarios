@@ -1,1 +1,40 @@
-<p>subjects works!</p>
+<div class="container mt-4">
+
+  <h2>Asignaturas</h2>
+
+  <!-- Formulario de creación/edición -->
+
+
+  <hr>
+
+  <!-- Tabla de asignaturas -->
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Código</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr >
+      @for(subject of subjects; track subject.id )
+      {
+        <td>{{ subject.id }}</td>
+        <td>{{ subject.name }}</td>
+        <td>{{ subject.code }}</td>
+
+
+        <td>
+          <button [routerLink]="['/asignaturas', subject.id]" class="btn btn-info btn-sm me-1">Ver</button>
+
+          <button class="btn btn-danger btn-sm" (click)="delete(subject.id)">Eliminar</button>
+        </td>
+      }
+
+    </tr>
+    </tbody>
+  </table>
+
+</div>

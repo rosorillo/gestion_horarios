@@ -4,6 +4,10 @@ import {ProfessorsComponent} from './professors/professors';
 import { LoginComponent } from './login/login';
 import { authGuard } from './guards/auth-guard'
 import {ScheduleComponent} from './schedule/scheduleComponent';
+import {SubjectsComponent} from './subjects/subjects';
+import {SubjectShowComponent} from './subjects/subject-show/subject-show';
+import { ProfessorShowComponent } from './professors/professor-show/professor-show';
+
 export const routes: Routes = [
   { path: '',
     redirectTo: 'login',
@@ -16,12 +20,20 @@ export const routes: Routes = [
   {
     path: 'profesores',
     component: ProfessorsComponent,
-    canActivate: [authGuard],
+    //canActivate: [authGuard],
+  },
+  {
+    path:'profesores/:id',
+    component:ProfessorShowComponent
   },
   {
     path: 'asignaturas',
-    component: ScheduleComponent,
-    canActivate: [authGuard],
+    component: SubjectsComponent,
+    //canActivate: [authGuard],
+  },
+  {
+    path: 'asignaturas/:id',
+    component: SubjectShowComponent,
   },
   {
     path: 'horario',

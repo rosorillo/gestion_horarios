@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {tap} from 'rxjs';
+import {Router} from '@angular/router';
 @Injectable({
   providedIn: 'root',
 })
@@ -8,6 +9,7 @@ export class AuthService {
 
   private apiBase = '/api';
 
+  private router = inject(Router);
   constructor(private http: HttpClient) {}
 
 login(email: string, password: string) {
@@ -16,10 +18,12 @@ login(email: string, password: string) {
       { email, password },
       { headers: { Accept: 'application/json' } }
     ).pipe(
+
       tap(response => {
         localStorage.setItem('user', JSON.stringify(response.user));
         if (response.token) {
           localStorage.setItem('token', response.token);
+          this.router.navigate(['/dashboard']);
         }
       })
     );
