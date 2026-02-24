@@ -1,6 +1,23 @@
 services:
+  nginx:
+    build: ./nginx
+    container_name: nginx-container
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./www/html:/var/www/html
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - backend
+#    dns:
+#      - 172.20.0.53
+    networks:
+      default:
+        ipv4_address: 172.20.0.10
+
   mariadb:
-    image: mariadb:10.3.9
+    image: mariadb:latest
     container_name: gestion_horarios-db
     environment:
       MYSQL_DATABASE: gestion_horarios
@@ -11,6 +28,20 @@ services:
       - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
+      - ./mariadb:/docker-entrypoint-initdb.d
+
+  dns:
+    image: internetsystemsconsortium/bind9:9.18
+    container_name: dns-container
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    volumes:
+      - ./bind:/etc/bind
+    restart: "no"
+    networks:
+      default:
+        ipv4_address: 172.20.0.53
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -20,10 +51,9 @@ services:
       PMA_PORT: 3306
       PMA_ARBITRARY: 0
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - mariadb
-
 
   backend:
     build: ./backend
@@ -34,7 +64,8 @@ services:
       - "8000:8000"
     depends_on:
       - mariadb
-        
+#    dns:
+#      - 172.20.0.53
 
   frontend:
     build: ./frontend
@@ -46,7 +77,15 @@ services:
       - "4200:4200"
     depends_on:
       - backend
+#    dns:
+#      - 172.20.0.53
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 
 volumes:
   mariadb_data:
-
