@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {Schedule, ScheduleService} from '../services/schedule.service';
 
@@ -11,12 +11,9 @@ import {Schedule, ScheduleService} from '../services/schedule.service';
 export class ScheduleComponent {
   public schedules: Schedule[] = [];
 
-  constructor(private scheduleService: ScheduleService) {}
+  constructor(){}
 
-  ngOnInit() {
-    this.scheduleService.getAll().subscribe({
-      next: data => this.schedules = data,
-      error: err => console.error(err)
-    });
-  }
+  private scheduleService = inject(ScheduleService);
+
+
 }

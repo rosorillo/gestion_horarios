@@ -1,24 +1,33 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard';
-
+import {ProfessorsComponent} from './professors/professors';
+import { LoginComponent } from './login/login';
+import { authGuard } from './guards/auth-guard'
 export const routes: Routes = [
-  { path: '', component: DashboardComponent },
+  { path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
   {
     path: 'profesores',
-    loadComponent: () =>
-      import('./professors/professors')
-        .then(m => m.ProfessorsComponent)
+    component: ProfessorsComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'asignaturas',
-    loadComponent: () =>
-      import('./subjects/subjects')
-        .then(m => m.Subjects)
+    canActivate: [authGuard],
   },
   {
     path: 'horario',
-    loadComponent: () =>
-      import('./schedule/scheduleComponent')
-        .then(m => m.ScheduleComponent)
+    component: DashboardComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
   }
 ];
