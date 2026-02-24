@@ -15,9 +15,9 @@ docker compose run --rm backend composer install
 ```
 
 ## DNS
-Para que funcione el redireccionamiento de Nginx y el DNS, hay que modificar el archivo /etc/resolv.conf:
+Añadir en /etc/hosts:
 ```bash
-nameserver 172.20.0.53
+127.0.0.1 gestion-profes.es www.gestion-profes.es
 ```
 
 ## URLs
