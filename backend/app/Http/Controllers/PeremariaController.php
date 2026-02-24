@@ -6,10 +6,14 @@ use App\Models\Ausencia;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+/**
+ * Endpoint público: no requiere autenticación.
+ * Para el profesor de guardia: ver profesores que faltan, días, horas y tareas.
+ */
 class PeremariaController extends Controller
 {
     /**
-     * Aulas con ausencias de profesores (público, para el profesor de guardia).
+     * Aulas con ausencias y resumen de profesores ausentes (público).
      * Query param opcional: fecha (Y-m-d). Por defecto hoy.
      */
     public function index(Request $request)
@@ -30,51 +34,91 @@ class PeremariaController extends Controller
             ->get();
 
         $aulasMap = [];
+        $resumen = [];
+
         foreach ($ausencias as $ausencia) {
+            if (!$ausencia->user) {
+                continue;
+            }
+
+            $horasYTareas = [];
+
             foreach ($ausencia->ausenciaDetalles as $detalle) {
+                $franja = $detalle->horario?->franjaHoraria;
+                $horasYTareas[] = [
+                    'hora_inicio' => $franja?->hora_inicio,
+                    'hora_fin' => $franja?->hora_fin,
+                    'asignatura' => $detalle->horario?->asignatura?->nombre,
+                    'curso' => $detalle->horario?->curso?->nombre,
+                    'tareas' => $detalle->tareas ?? '',
+                ];
+
                 $aula = $detalle->horario?->aula;
                 if (!$aula) continue;
+
                 $aulaId = $aula->id;
                 if (!isset($aulasMap[$aulaId])) {
                     $aulasMap[$aulaId] = [
-                        'aula' => [
-                            'id' => $aula->id,
-                            'nombre' => $aula->nombre,
-                        ],
+                        'aula' => ['id' => $aula->id, 'nombre' => $aula->nombre],
                         'ausencias' => [],
                     ];
                 }
                 $profesorKey = $ausencia->user->id;
                 if (!isset($aulasMap[$aulaId]['ausencias'][$profesorKey])) {
                     $aulasMap[$aulaId]['ausencias'][$profesorKey] = [
-                        'profesor' => [
-                            'id' => $ausencia->user->id,
-                            'nombre' => $ausencia->user->nombre,
+                        'profesor' => ['id' => $ausencia->user->id, 'nombre' => $ausencia->user->nombre],
+                        'dias' => [
+                            'desde' => Carbon::parse($ausencia->fecha_inicio)->toDateString(),
+                            'hasta' => Carbon::parse($ausencia->fecha_fin)->toDateString(),
                         ],
-                        'fecha_inicio' => $ausencia->fecha_inicio,
-                        'fecha_fin' => $ausencia->fecha_fin,
                         'motivo' => $ausencia->motivo,
-                        'detalles' => [],
+                        'horas_y_tareas' => [],
                     ];
                 }
-                $aulasMap[$aulaId]['ausencias'][$profesorKey]['detalles'][] = [
-                    'fecha' => $detalle->fecha,
-                    'tareas' => $detalle->tareas,
-                    'asignatura' => $detalle->horario->asignatura?->nombre,
-                    'curso' => $detalle->horario->curso?->nombre,
-                    'franja' => $detalle->horario->franjaHoraria ? [
-                        'hora_inicio' => $detalle->horario->franjaHoraria->hora_inicio,
-                        'hora_fin' => $detalle->horario->franjaHoraria->hora_fin,
-                    ] : null,
+                $aulasMap[$aulaId]['ausencias'][$profesorKey]['horas_y_tareas'][] = [
+                    'hora_inicio' => $franja?->hora_inicio,
+                    'hora_fin' => $franja?->hora_fin,
+                    'asignatura' => $detalle->horario?->asignatura?->nombre,
+                    'curso' => $detalle->horario?->curso?->nombre,
+                    'tareas' => $detalle->tareas ?? '',
                 ];
             }
+
+            $resumen[] = [
+                'profesor' => ['id' => $ausencia->user->id, 'nombre' => $ausencia->user->nombre],
+                'dias' => [
+                    'desde' => Carbon::parse($ausencia->fecha_inicio)->toDateString(),
+                    'hasta' => Carbon::parse($ausencia->fecha_fin)->toDateString(),
+                ],
+                'motivo' => $ausencia->motivo,
+                'horas_y_tareas' => $horasYTareas,
+            ];
         }
 
-        $resultado = array_values(array_map(function ($item) {
+        $aulas = array_values(array_map(function ($item) {
             $item['ausencias'] = array_values($item['ausencias']);
             return $item;
         }, $aulasMap));
 
-        return response()->json($resultado);
+        $tareas = [];
+        foreach ($resumen as $r) {
+            foreach ($r['horas_y_tareas'] as $h) {
+                $tareas[] = [
+                    'profesor' => $r['profesor']['nombre'],
+                    'asignatura' => $h['asignatura'] ?? null,
+                    'curso' => $h['curso'] ?? null,
+                    'hora_inicio' => $h['hora_inicio'] ?? null,
+                    'hora_fin' => $h['hora_fin'] ?? null,
+                    'tareas' => $h['tareas'] ?? '',
+                ];
+            }
+        }
+
+        return response()->json([
+            'fecha' => $fecha->toDateString(),
+            'aulas' => $aulas,
+            'profesores_ausentes' => $resumen,
+            'tareas' => $tareas,
+        ]);
     }
 }
