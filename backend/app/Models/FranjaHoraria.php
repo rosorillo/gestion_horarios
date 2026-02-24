@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class FranjaHoraria extends Model
 {
-    //
     use HasFactory;
+
+    protected $table = 'franjas_horarias';
 
     protected $fillable = [
         'hora_inicio',
