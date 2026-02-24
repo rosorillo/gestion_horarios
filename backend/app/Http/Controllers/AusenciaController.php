@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ausencia;
+use App\Models\User;
+use App\Notifications\AusenciaRegistradaNotification;
 use Illuminate\Http\Request;
 
 class AusenciaController extends Controller
@@ -10,13 +12,15 @@ class AusenciaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Ausencia::with(['user']);
 
-        return Ausencia::with([
-            'user'
-        ])->get();
+        if ($request->user()->rol === 'profesor') {
+            $query->where('usuario_id', $request->user()->id);
+        }
+
+        return $query->get();
     }
 
     /**
@@ -24,7 +28,14 @@ class AusenciaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $usuarioId = $request->user()->rol === 'admin'
+            ? $request->input('usuario_id')
+            : $request->user()->id;
+
+        if ($request->user()->rol === 'profesor') {
+            $request->merge(['usuario_id' => $usuarioId]);
+        }
+
         $request->validate([
             'usuario_id' => 'required|exists:usuarios,id',
             'fecha_inicio' => 'required|date',
@@ -33,11 +44,18 @@ class AusenciaController extends Controller
         ]);
 
         $ausencia = Ausencia::create([
-            'usuario_id' => $request->usuario_id,
+            'usuario_id' => $usuarioId,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
             'motivo' => $request->motivo,
         ]);
+
+        $ausencia->load('user');
+
+        $admins = User::where('rol', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new AusenciaRegistradaNotification($ausencia));
+        }
 
         return response()->json($ausencia);
     }
@@ -45,12 +63,15 @@ class AusenciaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        //
-        return Ausencia::with([
-            'user'
-        ])->findOrFail($id);
+        $ausencia = Ausencia::with(['user'])->findOrFail($id);
+
+        if ($request->user()->rol === 'profesor' && $ausencia->usuario_id !== $request->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
+        return $ausencia;
     }
 
     /**
@@ -58,7 +79,20 @@ class AusenciaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $ausencia = Ausencia::findOrFail($id);
+
+        if ($request->user()->rol === 'profesor' && $ausencia->usuario_id !== $request->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
+        $usuarioId = $request->user()->rol === 'admin'
+            ? $request->input('usuario_id')
+            : $ausencia->usuario_id;
+
+        if ($request->user()->rol === 'profesor') {
+            $request->merge(['usuario_id' => $usuarioId]);
+        }
+
         $request->validate([
             'usuario_id' => 'required|exists:usuarios,id',
             'fecha_inicio' => 'required|date',
@@ -66,24 +100,28 @@ class AusenciaController extends Controller
             'motivo' => 'required|string'
         ]);
 
-        $ausencia = Ausencia::findOrFail($id);
         $ausencia->update([
-            'usuario_id' => $request->usuario_id,
+            'usuario_id' => $usuarioId,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
             'motivo' => $request->motivo,
         ]);
 
-        return response()->json($ausencia);
+        return response()->json($ausencia->fresh('user'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
-        $ausencia = Ausencia::destroy($id);
+        $ausencia = Ausencia::findOrFail($id);
+
+        if ($request->user()->rol === 'profesor' && $ausencia->usuario_id !== $request->user()->id) {
+            abort(403, 'No autorizado');
+        }
+
+        $ausencia->delete();
         return response()->json(null, 204);
     }
 }

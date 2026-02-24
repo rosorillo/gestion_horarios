@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,14 +14,22 @@ class AdminUserController extends Controller
      */
     public function index()
     {
-        //
-        return User::select(
+        $usuarios = User::select(
             'id',
             'nombre',
             'email',
             'rol',
             'foto'
-        )->get();
+        )->with('ausencias')->get();
+
+        return $usuarios->map(function ($user) {
+            $diasFalta = $user->ausencias
+                ->sum(fn ($a) => Carbon::parse($a->fecha_inicio)->startOfDay()
+                    ->diffInDays(Carbon::parse($a->fecha_fin)->startOfDay()) + 1);
+            $userArray = $user->only(['id', 'nombre', 'email', 'rol', 'foto']);
+            $userArray['dias_falta'] = $diasFalta;
+            return $userArray;
+        });
     }
 
     /**
@@ -53,8 +62,22 @@ class AdminUserController extends Controller
      */
     public function show(string $id)
     {
-        //
-        
+        $user = User::select(
+            'id',
+            'nombre',
+            'email',
+            'rol',
+            'foto'
+        )->findOrFail($id);
+
+        $diasFalta = $user->ausencias()
+            ->get()
+            ->sum(fn ($a) => Carbon::parse($a->fecha_inicio)->startOfDay()
+                ->diffInDays(Carbon::parse($a->fecha_fin)->startOfDay()) + 1);
+
+        $userArray = $user->toArray();
+        $userArray['dias_falta'] = $diasFalta;
+        return $userArray;
     }
 
     /**
@@ -65,7 +88,7 @@ class AdminUserController extends Controller
         //
          $request->validate([
             'nombre' => 'required|string',
-            'email' => 'required|email|',
+            'email' => 'required|email|unique:usuarios,email,' . $id,
             'rol' => 'required|in:admin,profesor',
             'foto' => 'nullable|string'
         ]);
