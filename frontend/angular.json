@@ -68,10 +68,10 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-	  "options": {
-		"allowedHosts": [
-			"www.gestion-profes.es"
-		]
+          "options": {
+          "allowedHosts": [
+            "www.gestion-profes.es"
+          ]
          },
           "configurations": {
             "production": {

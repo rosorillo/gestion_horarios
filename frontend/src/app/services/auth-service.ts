@@ -6,16 +6,16 @@ import {tap} from 'rxjs';
 })
 export class AuthService {
 
-
-  private apiUrl = 'http://localhost:8000/api/login';
+  private apiBase = '/api';
 
   constructor(private http: HttpClient) {}
 
-  login(email: string, password: string) {
-    return this.http.post<any>(this.apiUrl, {
-      email,
-      password
-    }).pipe(
+login(email: string, password: string) {
+    return this.http.post<any>(
+      `${this.apiBase}/login`,
+      { email, password },
+      { headers: { Accept: 'application/json' } }
+    ).pipe(
       tap(response => {
         localStorage.setItem('user', JSON.stringify(response.user));
         if (response.token) {

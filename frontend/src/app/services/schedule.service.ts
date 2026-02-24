@@ -16,7 +16,7 @@ export interface Schedule {
 })
 export class ScheduleService {
 
-  private apiUrl = 'http://localhost:8000/api/horarios';
+  private apiUrl = 'https://www.gestion-profes.es/api/horarios';
 
   constructor(private http: HttpClient) {}
 

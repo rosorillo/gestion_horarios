@@ -13,7 +13,7 @@ export interface Subject {
 })
 export class SubjectsService {
 
-  private apiUrl = 'http://localhost:8000/api/asignaturas';
+  private apiUrl = 'https://www.gestion-profes.es/api/asignaturas';
 
   constructor(private http: HttpClient) {}
 

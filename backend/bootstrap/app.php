@@ -7,6 +7,8 @@ use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->prepend(HandleCors::class);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,

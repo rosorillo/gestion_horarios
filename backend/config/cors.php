@@ -11,6 +11,8 @@ return [
         'http://127.0.0.1:4200',
         'http://localhost:3000',
         'http://127.0.0.1:3000',
+        'https://gestion-profes.es',
+        'https://www.gestion-profes.es',
     ],
 
     'allowed_origins_patterns' => [],

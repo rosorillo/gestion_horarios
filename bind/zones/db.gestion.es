@@ -8,5 +8,5 @@ $TTL 86400
 ;
 @       IN  NS  ns1.gestion-profes.es.
 ns1     IN  A   172.20.0.53
-@       IN  A   172.20.0.10
-www     IN  A   172.20.0.10
+@       IN  A   127.0.0.1
+www     IN  A   127.0.0.1
