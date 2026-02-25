@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/peremaria', [PeremariaController::class, 'index']);
+// Público: profesor de guardia ve faltas sin estar logueado (no requiere auth)
+Route::get('/peremaria', [PeremariaController::class, 'index'])->name('peremaria');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);

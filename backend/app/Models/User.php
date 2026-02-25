@@ -54,11 +54,11 @@ class User extends Authenticatable
     }
 
     public function horarios() {
-        return $this->hasMany(Horario::class);
+        return $this->hasMany(Horario::class, 'usuario_id');
     }
 
     public function ausencias() {
-        return $this->hasMany(Ausencia::class);
+        return $this->hasMany(Ausencia::class, 'usuario_id');
     }
 
     public function esAdmin() {

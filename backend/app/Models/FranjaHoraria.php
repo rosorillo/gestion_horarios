@@ -18,6 +18,6 @@ class FranjaHoraria extends Model
     ];
 
     public function horarios() {
-        return $this->hasMany(Horario::class);
+        return $this->hasMany(Horario::class, 'franja_id');
     }
 }

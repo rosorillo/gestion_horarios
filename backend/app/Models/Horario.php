@@ -20,7 +20,7 @@ class Horario extends Model
     ];
 
     public function user() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
     public function asignatura() {
@@ -36,6 +36,6 @@ class Horario extends Model
     }
 
     public function franjaHoraria() {
-        return $this->belongsTo(FranjaHoraria::class);
+        return $this->belongsTo(FranjaHoraria::class, 'franja_id');
     }
 }
