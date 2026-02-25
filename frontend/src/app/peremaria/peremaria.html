@@ -1,0 +1,82 @@
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Peremaria</h2>
+    <button class="btn btn-outline-secondary btn-sm" (click)="cargar()">Actualizar</button>
+  </div>
+
+  @if (cargando()) {
+    <p>Cargando...</p>
+  } @else {
+    @if (error()) {
+      <div class="alert alert-danger">{{ error() }}</div>
+    } @else {
+
+      <div class="row g-3">
+
+        <!-- Faltas hoy -->
+        <div class="col-12 col-lg-8">
+          <div class="card">
+            <div class="card-header"><strong>Clases afectadas por faltas</strong></div>
+            <div class="card-body p-0">
+              @if (faltasHoy().length === 0) {
+                <div class="p-3">No hay faltas ahora mismo</div>
+              } @else {
+                <div class="table-responsive">
+                  <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Día</th>
+                        <th>Hora</th>
+                        <th>Profesor</th>
+                        <th>Asignatura</th>
+                        <th>Curso</th>
+                        <th>Aula</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      @for (h of faltasHoy(); track h.id) {
+                        <tr>
+                          <td>{{ diaNombre(h.dia_semana) }}</td>
+                          <td>{{ h.franja_horaria.hora_inicio }} - {{ h.franja_horaria.hora_fin }}</td>
+                          <td>{{ h.user.nombre }}</td>
+                          <td>{{ h.asignatura.nombre }}</td>
+                          <td>{{ h.curso.nombre }}</td>
+                          <td>{{ h.aula.nombre }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Profesores (TODOS) -->
+        <div class="col-12 col-lg-4">
+          <div class="card">
+            <div class="card-header"><strong>Profesores</strong></div>
+            <div class="card-body">
+              @if (profesores().length === 0) {
+                <p class="mb-0">No hay profesores.</p>
+              } @else {
+                <div class="d-grid gap-2">
+                  @for (p of profesores(); track p.id) {
+                    <a class="btn btn-outline-primary text-start"
+                       [routerLink]="['/peremaria/profesor', p.id]">
+                      {{ p.nombre }}
+                      <div class="small text-muted">{{ p.email }}</div>
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    }
+  }
+</div>

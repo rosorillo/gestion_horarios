@@ -7,8 +7,11 @@ import {ScheduleComponent} from './schedule/scheduleComponent';
 import {SubjectsComponent} from './subjects/subjects';
 import {SubjectShowComponent} from './subjects/subject-show/subject-show';
 import { ProfessorShowComponent } from './professors/professor-show/professor-show';
+import { PeremariaComponent } from './peremaria/peremaria';
 
 export const routes: Routes = [
+  { path: 'peremaria', component: PeremariaComponent },
+
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
   { path: 'login', component: LoginComponent },
