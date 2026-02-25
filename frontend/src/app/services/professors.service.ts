@@ -14,33 +14,33 @@ export interface Professor {
 })
 export class ProfessorsService {
 
-  private apiUrl = 'https://www.gestion-profes.es/api/profesores';
+  private apiBase = '/api/usuarios';
 
 
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Professor[]> {
-    return this.http.get<Professor[]>(this.apiUrl)
+    return this.http.get<Professor[]>(this.apiBase)
       .pipe(catchError(this.handleError));
   }
 
   getById(id: number): Observable<Professor> {
-    return this.http.get<Professor>(`${this.apiUrl}/${id}`)
+    return this.http.get<Professor>(`${this.apiBase}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
   create(data: Partial<Professor>): Observable<Professor> {
-    return this.http.post<Professor>(this.apiUrl, data)
+    return this.http.post<Professor>(this.apiBase, data)
       .pipe(catchError(this.handleError));
   }
 
   update(id: number, data: Partial<Professor>): Observable<Professor> {
-    return this.http.put<Professor>(`${this.apiUrl}/${id}`, data)
+    return this.http.put<Professor>(`${this.apiBase}/${id}`, data)
       .pipe(catchError(this.handleError));
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`)
+    return this.http.delete<void>(`${this.apiBase}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
@@ -50,6 +50,6 @@ export class ProfessorsService {
   }
 
   getProfessor(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
+    return this.http.get(`${this.apiBase}/${id}`);
   }
 }

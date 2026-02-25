@@ -1,6 +1,22 @@
-<!-- Header -->
 <nav class="navbar navbar-dark bg-dark">
   <div class="container-fluid">
-    <span class="navbar-brand mb-0 h1">Panel de Administración</span>
+
+    @if (isAdmin) {
+      <span class="navbar-brand mb-0 h1">Panel de Administración</span>
+    }
+
+    <div class="d-flex">
+      @if (isLoggedIn) {
+        <a routerLink="/dashboard" class="btn btn-outline-secondary">
+          Dashboard
+        </a>
+        <button
+          class="btn btn-outline-danger"
+          (click)="logout()">
+          Logout
+        </button>
+      }
+    </div>
+
   </div>
 </nav>

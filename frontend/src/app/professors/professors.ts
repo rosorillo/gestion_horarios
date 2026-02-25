@@ -10,6 +10,7 @@ import {RouterLink} from '@angular/router';
 })
 export class ProfessorsComponent implements OnInit {
 
+
   public professors: Professor[] = [];
 
   constructor(private professorsService: ProfessorsService) {}

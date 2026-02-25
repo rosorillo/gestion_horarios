@@ -18,6 +18,8 @@
           <td>{{ p.email }}</td>
         </tr>
         <a [routerLink]="['/profesores', p.id]"></a>
+      } @empty {
+        <td>No hay profes</td>
       }
     </tbody>
   </table>
