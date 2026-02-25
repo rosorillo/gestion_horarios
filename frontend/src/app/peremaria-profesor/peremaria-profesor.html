@@ -1,0 +1,67 @@
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h2 class="mb-0">Horario de {{ profesorNombre() }}</h2>
+      <div class="text-muted">Vista pública · Peremaria</div>
+    </div>
+
+    <a class="btn btn-outline-secondary btn-sm" routerLink="/peremaria">
+      Volver
+    </a>
+  </div>
+
+  @if (cargando()) {
+    <p>Cargando...</p>
+  } @else {
+
+    @if (error()) {
+      <div class="alert alert-danger">{{ error() }}</div>
+    } @else {
+
+      @if (rows().length === 0) {
+        <div class="alert alert-info">Este profesor no tiene horario cargado.</div>
+      } @else {
+
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th style="width: 140px;">Hora</th>
+                @for (d of dias; track d.key) {
+                  <th>{{ d.label }}</th>
+                }
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (r of rows(); track r.orden) {
+                <tr>
+                  <td class="fw-semibold">
+                    {{ r.hora_inicio }} - {{ r.hora_fin }}
+                  </td>
+
+                  @for (d of dias; track d.key) {
+                    <td>
+                      @if (r.cells[d.key]?.length) {
+                        @for (c of r.cells[d.key]!; track $index) {
+                          <div class="p-2 border rounded mb-2">
+                            <div class="fw-semibold">{{ c.asignatura }}</div>
+                            <div class="small text-muted">{{ c.curso }} · {{ c.aula }}</div>
+                          </div>
+                        }
+                      } @else {
+                        <span class="text-muted">—</span>
+                      }
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+      }
+
+    }
+  }
+</div>

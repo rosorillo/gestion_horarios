@@ -8,9 +8,11 @@ import {SubjectsComponent} from './subjects/subjects';
 import {SubjectShowComponent} from './subjects/subject-show/subject-show';
 import { ProfessorShowComponent } from './professors/professor-show/professor-show';
 import { PeremariaComponent } from './peremaria/peremaria';
+import { PeremariaProfesorComponent } from './peremaria-profesor/peremaria-profesor';
 
 export const routes: Routes = [
   { path: 'peremaria', component: PeremariaComponent },
+  { path: 'peremaria/profesor/:id', component: PeremariaProfesorComponent },
 
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
