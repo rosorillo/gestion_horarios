@@ -1,32 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, RouterLink} from '@angular/router';
-import {ProfessorsService } from '../../services/professors.service';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ProfessorsService, Professor } from '../../services/professors.service';
 
 @Component({
   selector: 'app-professor-show',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './professor-show.html',
   styleUrls: ['./professor-show.scss']
 })
 export class ProfessorShowComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private professorService = inject(ProfessorsService);
 
-  professor: any = null;
-  id!: number;
+  professor = signal<Professor | null>(null);
+  cargando = signal<boolean>(true);
+  id: number = 0;
 
-  constructor(
-    private route: ActivatedRoute,
-    private professorService: ProfessorsService
-  ) {}
 
   ngOnInit(): void {
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.loadProfessor();
-  }
+    const rawId = this.route.snapshot.paramMap.get('id');
+    this.id = rawId ? Number(rawId) : 0;
 
-  loadProfessor(): void {
-    this.professorService.getProfessor(this.id).subscribe({
-      next: (data) => this.professor = data,
-      error: (err) => console.error(err)
+    this.professorService.getById(this.id).subscribe({
+      next: (data) => {
+        console.log('DATA SHOW', data);
+        this.professor.set(data);
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.cargando.set(false);
+      }
     });
   }
 }

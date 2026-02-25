@@ -5,8 +5,11 @@ import { catchError } from 'rxjs/operators';
 
 export interface Professor {
   id: number;
-  name: string;
+  nombre: string;
   email: string;
+  rol: string;
+  foto: string | null;
+  dias_falta: number;
 }
 
 @Injectable({

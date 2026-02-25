@@ -1,24 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ProfessorsService, Professor } from '../services/professors.service';
-import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-professors',
+  standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './professors.html'
+  templateUrl: './professors.html',
 })
 export class ProfessorsComponent implements OnInit {
+  private professorsService = inject(ProfessorsService);
 
+  profesores = signal<Professor[]>([]);
+  cargando = signal<boolean>(true);
+  error = signal<string | null>(null);
 
-  public professors: Professor[] = [];
+  ngOnInit(): void {
+    this.cargando.set(true);
+    this.error.set(null);
 
-  constructor(private professorsService: ProfessorsService) {}
-
-  ngOnInit() {
     this.professorsService.getAll().subscribe({
-      next: data => this.professors = data,    // Guardamos los datos para mostrar
-      error: err => console.error(err)
+      next: (data) => {
+        this.profesores.set(data);
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        console.error('Error cargando profesores', err);
+        this.error.set('No se pudieron cargar los profesores');
+        this.cargando.set(false);
+      }
     });
   }
 }

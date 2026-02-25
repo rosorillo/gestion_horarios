@@ -1,24 +1,34 @@
 <div class="container mt-4">
-  @if(professor)
-  {
-    <div class="card">
-      <div class="card-header">
-        <h3>{{ professor.name }}</h3>
+
+  @if (cargando()) {
+    <p>Cargando...</p>
+  } @else {
+
+    @if (professor()) {
+      <div class="card">
+        <div class="card-header">
+          <h3>{{ professor()!.nombre }}</h3>
+        </div>
+
+        <div class="card-body">
+          <p><strong>ID:</strong> {{ professor()!.id }}</p>
+          <p><strong>Email:</strong> {{ professor()!.email }}</p>
+          <p><strong>Rol:</strong> {{ professor()!.rol }}</p>
+          <p><strong>Días de falta:</strong> {{ professor()!.dias_falta }}</p>
+        </div>
+
+        <div class="card-footer">
+          <a routerLink="/profesores" class="btn btn-secondary">Volver</a>
+        </div>
+      </div>
+    } @else {
+      <div class="alert alert-warning">
+        No se encontró el profesor.
       </div>
 
-      <div class="card-body">
-        <p><strong>ID:</strong> {{ professor.id }}</p>
-        <p><strong>Email:</strong> {{ professor.email }}</p>
-        <p><strong>Departamento:</strong> {{ professor.department }}</p>
-      </div>
-    </div>
+      <a routerLink="/profesores" class="btn btn-secondary">Volver</a>
+    }
 
   }
 
-    <div class="card-footer">
-      <a [routerLink]="['/profesores']" class="btn btn-secondary">
-        Volver
-      </a>
-    </div>
-  </div>
-
+</div>
