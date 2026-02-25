@@ -1,40 +1,35 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export interface Subject {
   id: number;
-  name: string;
-  code: string;
+  nombre: string;
+  created_at: string;
+  updated_at: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SubjectsService {
-
-  private apiUrl = 'https://www.gestion-profes.es/api/asignaturas';
+  private apiBase = '/api/asignaturas';
 
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Subject[]> {
-    return this.http.get<Subject[]>(this.apiUrl);
+    return this.http.get<Subject[]>(this.apiBase).pipe(catchError(this.handleError));
   }
 
-  create(data: Partial<Subject>): Observable<Subject> {
-    return this.http.post<Subject>(this.apiUrl, data);
-  }
-
-  update(id: number, data: Partial<Subject>): Observable<Subject> {
-    return this.http.put<Subject>(`${this.apiUrl}/${id}`, data);
+  getById(id: number): Observable<Subject> {
+    return this.http.get<Subject>(`${this.apiBase}/${id}`).pipe(catchError(this.handleError));
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-  getSubject(id: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiBase}/${id}`).pipe(catchError(this.handleError));
   }
 
-
+  private handleError(error: HttpErrorResponse) {
+    console.error('API Error:', error);
+    return throwError(() => error);
+  }
 }

@@ -1,32 +1,44 @@
-import { Component } from '@angular/core';
-import {ActivatedRoute, RouterLink} from '@angular/router';
-import {SubjectsService} from '../../services/subjects.service';
-
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { SubjectsService, Subject } from '../../services/subjects.service';
 
 @Component({
   selector: 'app-subject-show',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './subject-show.html',
-  styleUrl: './subject-show.scss',
+  styleUrls: ['./subject-show.scss'],
 })
-export class SubjectShowComponent {
-  subject: any;
-  id!: number;
+export class SubjectShowComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private subjectService = inject(SubjectsService);
 
-  constructor(
-    private route: ActivatedRoute,
-    private subjectService: SubjectsService
-  ) {}
+  subject = signal<Subject | null>(null);
+  cargando = signal<boolean>(true);
+  id = signal<number>(0);
 
   ngOnInit(): void {
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    const rawId = this.route.snapshot.paramMap.get('id');
+    const parsed = rawId ? Number(rawId) : 0;
+    this.id.set(parsed);
+
     this.loadSubject();
   }
 
   loadSubject(): void {
-    this.subjectService.getSubject(this.id).subscribe({
-      next: (data) => this.subject = data,
-      error: (err) => console.error(err)
+    this.cargando.set(true);
+
+    this.subjectService.getById(this.id()).subscribe({
+      next: (data) => {
+        this.subject.set(data);
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.subject.set(null);
+        this.cargando.set(false);
+      }
     });
   }
 }

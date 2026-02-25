@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { inject } from '@angular/core';
-import { SubjectsService, Subject } from '../subjects.service';
-import {RouterLink} from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { SubjectsService, Subject } from '../services/subjects.service';
 
 @Component({
   selector: 'app-subjects',
@@ -11,60 +10,40 @@ import {RouterLink} from '@angular/router';
   templateUrl: './subjects.html',
   styleUrls: ['./subjects.scss'],
 })
-export class SubjectsComponent {
-
+export class SubjectsComponent implements OnInit {
   private subjectService = inject(SubjectsService);
 
-  subjects: Subject[] = [];
-  selectedSubject: Subject | null = null;
+  subjects = signal<Subject[]>([]);
+  cargando = signal<boolean>(true);
+  error = signal<string | null>(null);
 
-  constructor() {
-    this.getAll(); // cargar al inicio
+  ngOnInit(): void {
+    this.getAll();
   }
 
-  // 🔹 Obtener todas las asignaturas
-  getAll() {
+  getAll(): void {
+    this.cargando.set(true);
+    this.error.set(null);
+
     this.subjectService.getAll().subscribe({
       next: (data) => {
-        this.subjects = data;
-        console.log('Asignaturas cargadas:', this.subjects);
+        this.subjects.set(data);
+        this.cargando.set(false);
       },
       error: (err) => {
         console.error('Error al obtener asignaturas:', err);
+        this.error.set('No se pudieron cargar las asignaturas');
+        this.cargando.set(false);
       }
     });
   }
 
-  // 🔹 Obtener asignatura por ID
-  getById(id: number) {
-    this.subjectService.getAll().subscribe({
-      next: (data) => {
-        this.selectedSubject = data.find(s => s.id === id) || null;
-        console.log('Asignatura seleccionada:', this.selectedSubject);
-      },
-      error: (err) => console.error('Error al buscar asignatura:', err)
-    });
-  }
-
-  // 🔹 Eliminar asignatura
-  delete(id: number) {
+  delete(id: number): void {
     if (!confirm('¿Seguro que quieres eliminar esta asignatura?')) return;
 
     this.subjectService.delete(id).subscribe({
-      next: () => {
-        console.log('Asignatura eliminada:', id);
-        // refrescar lista
-        this.getAll();
-      },
+      next: () => this.getAll(),
       error: (err) => console.error('Error al eliminar:', err)
     });
-  }
-
-  // 🔹 Mostrar asignatura (ejemplo para modal o console)
-  show(id: number) {
-    this.getById(id);
-    if (this.selectedSubject) {
-      console.log('Mostrar asignatura:', this.selectedSubject);
-    }
   }
 }
