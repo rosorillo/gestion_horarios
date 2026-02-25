@@ -70,7 +70,8 @@
           "builder": "@angular/build:dev-server",
           "options": {
           "allowedHosts": [
-            "www.gestion-profes.es"
+            "www.gestion-profes.es",
+            "gestion-profes.es"
           ]
          },
           "configurations": {

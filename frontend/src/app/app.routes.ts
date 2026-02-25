@@ -9,39 +9,19 @@ import {SubjectShowComponent} from './subjects/subject-show/subject-show';
 import { ProfessorShowComponent } from './professors/professor-show/professor-show';
 
 export const routes: Routes = [
-  { path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
-  {
-    path: 'login',
-    component: LoginComponent
-  },
-  {
-    path: 'profesores',
-    component: ProfessorsComponent,
-    //canActivate: [authGuard],
-  },
-  {
-    path:'profesores/:id',
-    component:ProfessorShowComponent
-  },
-  {
-    path: 'asignaturas',
-    component: SubjectsComponent,
-    //canActivate: [authGuard],
-  },
-  {
-    path: 'asignaturas/:id',
-    component: SubjectShowComponent,
-  },
-  {
-    path: 'horario',
-    component: DashboardComponent,
-    canActivate: [authGuard],
-  },
-  {
-    path: '**',
-    redirectTo: 'login',
-  }
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
+  { path: 'login', component: LoginComponent },
+
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+
+  { path: 'horario', component: ScheduleComponent, canActivate: [authGuard] },
+
+  { path: 'profesores', component: ProfessorsComponent, canActivate: [authGuard] },
+  { path: 'profesores/:id', component: ProfessorShowComponent, canActivate: [authGuard] },
+
+  { path: 'asignaturas', component: SubjectsComponent, canActivate: [authGuard] },
+  { path: 'asignaturas/:id', component: SubjectShowComponent, canActivate: [authGuard] },
+
+  { path: '**', redirectTo: 'dashboard' }
 ];

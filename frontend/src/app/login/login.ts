@@ -1,6 +1,6 @@
 import {Component, inject, } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import {RouterOutlet, RouterLink, RouterLinkWithHref} from '@angular/router';
+import {RouterLink, Router, ActivatedRoute} from '@angular/router';
 import {AuthService} from '../services/auth-service';
 
 
@@ -11,7 +11,8 @@ import {AuthService} from '../services/auth-service';
   styleUrl: './login.scss',
 })
 export class LoginComponent {
-
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
 
@@ -31,6 +32,8 @@ export class LoginComponent {
     this.authService.login(email!, password!)
       .subscribe({
         next: res => {
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
+          this.router.navigateByUrl(returnUrl);
           console.log('Login OK', res);
         },
         error: err => {
